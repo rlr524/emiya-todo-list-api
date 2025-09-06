@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-@Document(collation = "items")
+@Document("items")
 public class Item {
     @Id
     private String id;

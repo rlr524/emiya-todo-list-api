@@ -3,6 +3,7 @@ package com.emiyaconsulting.emiya_todo_list_api.controller;
 import com.emiyaconsulting.emiya_todo_list_api.model.Item;
 import com.emiyaconsulting.emiya_todo_list_api.service.ItemService;
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,11 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ItemController {
-    private final ItemService itemService;
-    
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
+    @Autowired
+    private ItemService itemService;
     
     // Insert a single item
     // The taint analysis warning is suppressed because we are sanitizing the input
