@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ItemController {
-    @Autowired
-    private ItemService itemService;
+    private final ItemService itemService;
+    
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
+    }
     
     // Insert a single item
     // The taint analysis warning is suppressed because we are sanitizing the input
@@ -41,5 +44,10 @@ public class ItemController {
     @GetMapping("/items")
     public Iterable<Item> getItems() {
         return itemService.getItems();
+    }
+    
+    @GetMapping("/")
+    public String healthCheck() {
+        return "OK";
     }
 }

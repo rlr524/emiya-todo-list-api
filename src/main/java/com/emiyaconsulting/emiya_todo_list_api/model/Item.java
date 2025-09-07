@@ -21,7 +21,7 @@ public class Item {
     private String id;
     private String title;
     private String description;
-    private Date due;
+    private String due;
     private boolean complete;
     private String owner;
     private boolean deleted;
