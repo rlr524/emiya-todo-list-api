@@ -3,7 +3,6 @@ package com.emiyaconsulting.emiya_todo_list_api.controller;
 import com.emiyaconsulting.emiya_todo_list_api.model.Item;
 import com.emiyaconsulting.emiya_todo_list_api.service.ItemService;
 import org.apache.commons.text.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,14 +25,20 @@ public class ItemController {
     @PostMapping("/item")
     public ResponseEntity<Item> saveItem(@RequestBody Item item) {
         if (item != null) {
-            if (item.getDescription() != null) {
-                item.setDescription(StringEscapeUtils.escapeHtml4(item.getDescription()));
+            if (item.getItemDescription() != null) {
+                item.setItemDescription(StringEscapeUtils.escapeHtml4(item.getItemDescription()));
             }
             if (item.getTitle() != null) {
                 item.setTitle(StringEscapeUtils.escapeHtml4(item.getTitle()));
             }
             if (item.getOwner() != null) {
                 item.setOwner(StringEscapeUtils.escapeHtml4(item.getOwner()));
+            }
+            if (item.getDue() != null) {
+                item.setDue(StringEscapeUtils.escapeHtml4(item.getDue()));
+            }
+            if (item.getImportance() != null) {
+                item.setImportance(StringEscapeUtils.escapeHtml4(item.getImportance()));
             }
         }
 

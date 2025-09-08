@@ -1,9 +1,6 @@
 package com.emiyaconsulting.emiya_todo_list_api.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,13 +17,28 @@ public class Item {
     @Id
     private String id;
     private String title;
-    private String description;
+    private String itemDescription;
     private String due;
     private boolean complete;
+    private String importance;
     private String owner;
     private boolean deleted;
     @CreatedDate
     private Date createdAt;
     @LastModifiedDate
     private Date updatedAt;
+
+    public Item(String id, String title, String itemDescription, String due, String importance, String owner, Boolean deleted, Boolean complete) {
+        this.id = id;
+        this.title = title;
+        this.itemDescription = itemDescription;
+        this.due = due;
+        this.complete = false;
+        this.importance = "Medium";
+        this.owner = owner;
+        this.deleted = false;
+    }
 }
+
+
+
