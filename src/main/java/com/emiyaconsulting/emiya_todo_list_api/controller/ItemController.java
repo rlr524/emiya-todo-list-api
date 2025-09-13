@@ -5,10 +5,7 @@ import com.emiyaconsulting.emiya_todo_list_api.service.ItemService;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ItemController {
@@ -46,11 +43,22 @@ public class ItemController {
         return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
     
+    // Return all items
     @GetMapping("/items")
     public Iterable<Item> getItems() {
         return itemService.getItems();
     }
     
+    @PutMapping("/item/{id}")
+    public ResponseEntity<Item> updatedItem(@PathVariable String id, @RequestBody Item itemDetails) {
+        Item updatedItem = itemService.updateItem(id, itemDetails);
+        if (updatedItem != null) {
+            return ResponseEntity.ok(updatedItem);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    // Healthcheck
     @GetMapping("/")
     public String healthCheck() {
         return "OK";
