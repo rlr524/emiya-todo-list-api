@@ -49,6 +49,11 @@ public class ItemController {
         return itemService.getItems();
     }
     
+    @GetMapping("/item/{id}")
+    public Item getItem(@PathVariable String id) {
+        return itemService.findOneItem(id);
+    }
+    
     @PutMapping("/item/{id}")
     public ResponseEntity<Item> updatedItem(@PathVariable String id, @RequestBody Item itemDetails) {
         Item updatedItem = itemService.updateItem(id, itemDetails);
@@ -57,6 +62,16 @@ public class ItemController {
         }
         return ResponseEntity.notFound().build();
     }
+    
+    @DeleteMapping("/item/{id}")
+    public ResponseEntity<Item> deleteItem(@PathVariable String id) {
+        Item deletedItem = itemService.deleteItem(id);
+        if (deletedItem != null) {
+            return ResponseEntity.ok(deletedItem);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
     
     // Healthcheck
     @GetMapping("/")

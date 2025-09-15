@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -23,6 +24,7 @@ public class Item {
     private String importance;
     private String owner;
     private boolean deleted;
+    private LocalDateTime deletedAt;
     @CreatedDate
     private Date createdAt;
     @LastModifiedDate
