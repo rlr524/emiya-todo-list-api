@@ -30,7 +30,7 @@ public class Item {
     @LastModifiedDate
     private Date updatedAt;
 
-    public Item(String id, String title, String itemDescription, String due, String importance, String owner, Boolean deleted, Boolean complete) {
+    public Item(String id, String title, String itemDescription, String due, String owner) {
         this.id = id;
         this.title = title;
         this.itemDescription = itemDescription;

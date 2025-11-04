@@ -17,7 +17,7 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
     
-    public Item saveItem(Item item) {
+    public Item createItem(Item item) {
         return itemRepository.save(item);
     }
     

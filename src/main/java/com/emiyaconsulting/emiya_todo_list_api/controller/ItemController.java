@@ -20,7 +20,7 @@ public class ItemController {
     // using StringEscapeUtils.escapeHtml4 to prevent XSS attacks.
     @SuppressWarnings("JvmTaintAnalysis")
     @PostMapping("/item")
-    public ResponseEntity<Item> saveItem(@RequestBody Item item) {
+    public ResponseEntity<Item> createItem(@RequestBody Item item) {
         if (item != null) {
             if (item.getItemDescription() != null) {
                 item.setItemDescription(StringEscapeUtils.escapeHtml4(item.getItemDescription()));
@@ -39,7 +39,7 @@ public class ItemController {
             }
         }
 
-        Item savedItem = itemService.saveItem(item);
+        Item savedItem = itemService.createItem(item);
         return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
     
