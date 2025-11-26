@@ -2,12 +2,14 @@ package com.emiyaconsulting.emiya_todo_list_api.controller;
 
 import com.emiyaconsulting.emiya_todo_list_api.model.Item;
 import com.emiyaconsulting.emiya_todo_list_api.service.ItemService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Validated
 public class ItemController {
     private final ItemService itemService;
     
@@ -17,9 +19,8 @@ public class ItemController {
     
     // Insert a single item
     @PostMapping("/item")
-    public ResponseEntity<Item> createItem(@Validated @RequestBody Item item) {
-        Item createdItem = itemService.createItem(item);
-        return new ResponseEntity<>(createdItem, HttpStatus.CREATED);
+    public ResponseEntity<Item> createItem(@Valid @RequestBody Item item) {
+        return ResponseEntity.ok(itemService.createItem(item));
     }
     
     // Return all items

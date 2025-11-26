@@ -5,23 +5,26 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
-import java.time.LocalDate;
 
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode
-@Document("items")
-public class Item {
+@Document("users")
+public class User {
     @Id
     private String id;
+    @Field("first_name")
+    private String firstName;
     @NonNull
-    private String title;
-    private String itemDescription;
-    private LocalDate due;
-    private boolean complete;
-    private String importance;
-    private String owner;
+    @Field("last_name")
+    private String lastName;
+    @NonNull
+    @Field("user_name")
+    private String userName;
+    private String email;
+    private boolean active;
     private boolean deleted;
     private Instant deletedAt;
     @CreatedDate
@@ -29,6 +32,3 @@ public class Item {
     @LastModifiedDate
     private Instant updatedAt;
 }
-
-
-
