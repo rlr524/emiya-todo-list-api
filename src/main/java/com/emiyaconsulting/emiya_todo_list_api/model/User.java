@@ -4,10 +4,12 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
+import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode
@@ -23,8 +25,11 @@ public class User {
     @NonNull
     @Field("user_name")
     private String userName;
+    @NonNull
     private String email;
     private boolean active;
+    @DBRef
+    private Set<Item> items;
     private boolean deleted;
     private Instant deletedAt;
     @CreatedDate

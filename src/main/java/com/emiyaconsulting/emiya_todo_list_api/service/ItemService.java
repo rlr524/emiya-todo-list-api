@@ -48,9 +48,7 @@ public class ItemService {
         
         if (optionalItem.isPresent()) {
             Item existingItem = optionalItem.get();
-            existingItem.setTitle(updatedItem.getTitle() != null 
-                    ? updatedItem.getTitle() 
-                    : optionalItem.get().getTitle());
+            existingItem.setTitle(updatedItem.getTitle());
             existingItem.setItemDescription(updatedItem.getItemDescription() != null 
                     ? updatedItem.getItemDescription() 
                     : optionalItem.get().getItemDescription());
@@ -68,7 +66,7 @@ public class ItemService {
             return itemRepository.save(existingItem);
         }
         log.info("Could not update item - item with id {} not found", id);
-        return null; // TODO: Add an exception for if item not found
+        return null;
     }
     
     // Performs a soft delete setting the deleted flag to true and setting deletedAt to the current datetime
@@ -82,6 +80,6 @@ public class ItemService {
             return itemRepository.save(existingItem);
         }
         log.info("Could not flag item as deleted - item with id {} not found", id);
-        return null; // TODO: Add an exception for if item not found
+        return null;
     }
 }
