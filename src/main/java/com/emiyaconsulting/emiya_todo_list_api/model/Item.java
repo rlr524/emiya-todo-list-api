@@ -6,40 +6,27 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 
-@Getter
-@Setter
+@Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode
-@NoArgsConstructor
 @Document("items")
 public class Item {
     @Id
     private String id;
     private String title;
     private String itemDescription;
-    private String due;
+    private LocalDate due;
     private boolean complete;
     private String importance;
     private String owner;
     private boolean deleted;
-    private LocalDateTime deletedAt;
+    private Instant deletedAt;
     @CreatedDate
-    private Date createdAt;
+    private Instant createdAt;
     @LastModifiedDate
-    private Date updatedAt;
-
-    public Item(String id, String title, String itemDescription, String due, String owner) {
-        this.id = id;
-        this.title = title;
-        this.itemDescription = itemDescription;
-        this.due = due;
-        this.complete = false;
-        this.importance = "Medium";
-        this.owner = owner;
-        this.deleted = false;
-    }
+    private Instant updatedAt;
 }
 
 

@@ -2,15 +2,19 @@ package com.emiyaconsulting.emiya_todo_list_api.service;
 
 import com.emiyaconsulting.emiya_todo_list_api.model.Item;
 import com.emiyaconsulting.emiya_todo_list_api.repository.ItemRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ItemService {
+    private static final Logger log = LoggerFactory.getLogger(ItemService.class);
+    
     private final ItemRepository itemRepository;
     
     public ItemService(ItemRepository itemRepository) {
@@ -41,17 +45,29 @@ public class ItemService {
     
     public Item updateItem(String id, Item updatedItem) {
         Optional<Item> optionalItem = itemRepository.findById(id);
+        
         if (optionalItem.isPresent()) {
             Item existingItem = optionalItem.get();
-            existingItem.setTitle(updatedItem.getTitle() != null ? updatedItem.getTitle() : optionalItem.get().getTitle());
-            existingItem.setItemDescription(updatedItem.getItemDescription() != null ? updatedItem.getItemDescription() : optionalItem.get().getItemDescription());
-            existingItem.setImportance(updatedItem.getImportance() != null ? updatedItem.getImportance() : optionalItem.get().getImportance());
-            existingItem.setDue(updatedItem.getDue() != null ? updatedItem.getDue() : optionalItem.get().getDue());
-            existingItem.setOwner(updatedItem.getOwner() != null ? updatedItem.getOwner() : optionalItem.get().getOwner());
+            existingItem.setTitle(updatedItem.getTitle() != null 
+                    ? updatedItem.getTitle() 
+                    : optionalItem.get().getTitle());
+            existingItem.setItemDescription(updatedItem.getItemDescription() != null 
+                    ? updatedItem.getItemDescription() 
+                    : optionalItem.get().getItemDescription());
+            existingItem.setImportance(updatedItem.getImportance() != null 
+                    ? updatedItem.getImportance() 
+                    : optionalItem.get().getImportance());
+            existingItem.setDue(updatedItem.getDue() != null 
+                    ? updatedItem.getDue() 
+                    : optionalItem.get().getDue());
+            existingItem.setOwner(updatedItem.getOwner() != null 
+                    ? updatedItem.getOwner() 
+                    : optionalItem.get().getOwner());
             existingItem.setComplete(updatedItem.isComplete());
             
             return itemRepository.save(existingItem);
         }
+        log.info("Could not update item - item with id {} not found", id);
         return null; // TODO: Add an exception for if item not found
     }
     
@@ -61,10 +77,11 @@ public class ItemService {
         if (optionalItem.isPresent()) {
             Item existingItem = optionalItem.get();
             existingItem.setDeleted(true);
-            existingItem.setDeletedAt(LocalDateTime.now());
+            existingItem.setDeletedAt(Instant.now());
             
             return itemRepository.save(existingItem);
         }
+        log.info("Could not flag item as deleted - item with id {} not found", id);
         return null; // TODO: Add an exception for if item not found
     }
 }
