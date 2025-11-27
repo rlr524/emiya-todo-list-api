@@ -28,8 +28,6 @@ public class User {
     @NonNull
     private String email;
     private boolean active;
-    @DBRef
-    private Set<Item> items;
     private boolean deleted;
     private Instant deletedAt;
     @CreatedDate

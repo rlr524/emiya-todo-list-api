@@ -21,7 +21,7 @@ public class Item {
     private LocalDate due;
     private boolean complete;
     private String importance;
-    private String owner;
+    private String owner; // User ID of the user owner of the item
     private boolean deleted;
     private Instant deletedAt;
     @CreatedDate

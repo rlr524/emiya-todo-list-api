@@ -28,6 +28,12 @@ public class ItemController {
         return itemService.getItems();
     }
     
+    // Return all items by user id
+    @GetMapping("/items/{id}")
+    public Iterable<Item> getItemsByUser(@PathVariable String id) {
+        return itemService.getItemsByUser(id);
+    }
+    
     @GetMapping("/item/{id}")
     public Item getItem(@PathVariable String id) {
         return itemService.findOneItem(id);
