@@ -50,8 +50,15 @@ public class UserService {
             existingUser.setFirstName(updatedUser.getFirstName() != null 
                     ? updatedUser.getFirstName() 
                     : optionalUser.get().getFirstName());
-            existingUser.setLastName(updatedUser.getLastName());
-            existingUser.setUserName(updatedUser.getUserName());
+            existingUser.setLastName(updatedUser.getLastName() != null 
+                    ? updatedUser.getLastName() 
+                    : optionalUser.get().getLastName());
+            existingUser.setUserName(updatedUser.getUserName() != null 
+                    ? updatedUser.getUserName() 
+                    : optionalUser.get().getUserName());
+            existingUser.setEmail(updatedUser.getEmail() != null 
+                    ? updatedUser.getEmail() 
+                    : optionalUser.get().getEmail());
             
             return userRepository.save(existingUser);
         }

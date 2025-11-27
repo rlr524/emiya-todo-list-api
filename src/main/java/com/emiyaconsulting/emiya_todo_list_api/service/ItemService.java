@@ -59,7 +59,9 @@ public class ItemService {
         
         if (optionalItem.isPresent()) {
             Item existingItem = optionalItem.get();
-            existingItem.setTitle(updatedItem.getTitle());
+            existingItem.setTitle(updatedItem.getTitle() != null 
+                    ? updatedItem.getTitle() 
+                    : optionalItem.get().getTitle());
             existingItem.setItemDescription(updatedItem.getItemDescription() != null 
                     ? updatedItem.getItemDescription() 
                     : optionalItem.get().getItemDescription());
