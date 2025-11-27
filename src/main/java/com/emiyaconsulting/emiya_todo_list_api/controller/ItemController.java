@@ -3,7 +3,6 @@ package com.emiyaconsulting.emiya_todo_list_api.controller;
 import com.emiyaconsulting.emiya_todo_list_api.model.Item;
 import com.emiyaconsulting.emiya_todo_list_api.service.ItemService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

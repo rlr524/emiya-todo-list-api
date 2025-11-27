@@ -1,27 +1,46 @@
 package com.emiyaconsulting.emiya_todo_list_api.service;
 
 import com.emiyaconsulting.emiya_todo_list_api.model.Item;
+import com.emiyaconsulting.emiya_todo_list_api.model.User;
 import com.emiyaconsulting.emiya_todo_list_api.repository.ItemRepository;
+import com.emiyaconsulting.emiya_todo_list_api.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ItemService {
     private static final Logger log = LoggerFactory.getLogger(ItemService.class);
     
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
     
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository, UserRepository userRepository) {
         this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
     }
     
     public Item createItem(Item item) {
+        String userId = item.getOwner();
+        Optional<User> userToAttachTo = userRepository.findById(userId);
+        
+        try {
+            if (userToAttachTo.isPresent()) {
+                Set<Item> userItems = new HashSet<>();
+                Set<Item> tempItems = userToAttachTo.get().getItems();
+                for (Item i : tempItems) {
+                    userItems.add(i);
+                }
+                userItems.add(item);
+            }
+        } catch (Exception e) {
+            log.error("Unable to find the user with user id {}, item could not be added", userId);
+            throw new RuntimeException(e);
+        }
+        
         return itemRepository.save(item);
     }
     
