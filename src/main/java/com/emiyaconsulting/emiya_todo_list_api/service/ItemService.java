@@ -42,8 +42,10 @@ public class ItemService {
     }
     
     public Iterable<Item> getItemsByUser(String userId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("owner").is(userId));
+        Query query = Query.query(new Criteria().andOperator(
+                Criteria.where("owner").is(userId), 
+                Criteria.where("deleted").is(false)
+        ));
         return mongoTemplate.find(query, Item.class);
     }
 
