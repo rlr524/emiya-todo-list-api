@@ -1,5 +1,6 @@
 package com.emiyaconsulting.emiya_todo_list_api.service;
 
+import com.emiyaconsulting.emiya_todo_list_api.exception.ItemNotFoundException;
 import com.emiyaconsulting.emiya_todo_list_api.model.Item;
 import com.emiyaconsulting.emiya_todo_list_api.repository.ItemRepository;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class ItemService {
         return optionalItem.orElse(null);
     }
     
-    public Item updateItem(String id, Item updatedItem) {
+    public Item updateItem(String id, Item updatedItem) throws ItemNotFoundException {
         Optional<Item> optionalItem = itemRepository.findById(id);
         
         if (optionalItem.isPresent()) {
@@ -62,7 +63,7 @@ public class ItemService {
             existingItem.setTitle(updatedItem.getTitle() != null 
                     ? updatedItem.getTitle() 
                     : optionalItem.get().getTitle());
-            existingItem.setItemDescription(updatedItem.getItemDescription() != null 
+            existingItem.setItemDescription(updatedItem.getItemDescription() != null
                     ? updatedItem.getItemDescription() 
                     : optionalItem.get().getItemDescription());
             existingItem.setImportance(updatedItem.getImportance() != null 
@@ -79,7 +80,7 @@ public class ItemService {
             return itemRepository.save(existingItem);
         }
         log.info("Could not update item - item with id {} not found", id);
-        return null;
+        throw new ItemNotFoundException(String.format("No item with id %s is available", id));
     }
     
     // Performs a soft delete setting the deleted flag to true and setting deletedAt to the current datetime
