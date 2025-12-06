@@ -84,7 +84,7 @@ public class ItemService {
     }
     
     // Performs a soft delete setting the deleted flag to true and setting deletedAt to the current datetime
-    public Item deleteItem(String id) {
+    public Item deleteItem(String id) throws ItemNotFoundException {
         Optional<Item> optionalItem = itemRepository.findById(id);
         if (optionalItem.isPresent()) {
             Item existingItem = optionalItem.get();
@@ -94,6 +94,6 @@ public class ItemService {
             return itemRepository.save(existingItem);
         }
         log.info("Could not flag item as deleted - item with id {} not found", id);
-        return null;
+        throw new ItemNotFoundException(String.format("No item with the id %s is available", id));
     }
 }
