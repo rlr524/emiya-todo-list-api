@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @Validated
 public class UserController {
@@ -30,7 +32,7 @@ public class UserController {
     
     // Return one user by id
     @GetMapping("/user/{id}")
-    public User getUser(@PathVariable String id) {
+    public Optional<User> getUser(@PathVariable String id) {
         return userService.findOneUser(id);
     }
 
