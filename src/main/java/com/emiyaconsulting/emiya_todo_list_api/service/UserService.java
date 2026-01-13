@@ -3,8 +3,6 @@ package com.emiyaconsulting.emiya_todo_list_api.service;
 import com.emiyaconsulting.emiya_todo_list_api.exception.UserNotFoundException;
 import com.emiyaconsulting.emiya_todo_list_api.model.User;
 import com.emiyaconsulting.emiya_todo_list_api.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,8 +12,6 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -38,13 +34,10 @@ public class UserService {
         return returnedUsers;
     }
     
-    public Optional<User> findOneUser(String id) throws UserNotFoundException {
-        try {
-            return userRepository.findById(id);
-        } catch (Exception e) {
-            log.info("Could not find user - user with id {} not found", id);
-            throw new UserNotFoundException(String.format("No user with the id %s is available", id));
-        }
+    public User findOneUser(String id) throws UserNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(
+                        String.format("No user with the id %s is available", id)));
     }
     
     public User updateUser(String id, User updatedUser) throws UserNotFoundException {
@@ -67,7 +60,6 @@ public class UserService {
             
             return userRepository.save(existingUser);
         }
-        log.info("Could not update user - user with id {} not found", id);
         throw new UserNotFoundException(String.format("No user with id %s is available", id));
     }
     
@@ -81,7 +73,6 @@ public class UserService {
             
             return userRepository.save(existingUser);
         }
-        log.info("Could not flag user as deleted - user with id {} not found", id);
         throw new UserNotFoundException(String.format("No user with the id %s is available", id));
     }
     
@@ -93,7 +84,6 @@ public class UserService {
             
             return userRepository.save(existingUser);
         }
-        log.info("Could not set user as inactive - user with id {} not found", id);
         throw new UserNotFoundException(String.format("No user with the id %s is available", id));
     }
 }

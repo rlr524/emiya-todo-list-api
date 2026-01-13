@@ -3,8 +3,6 @@ package com.emiyaconsulting.emiya_todo_list_api.service;
 import com.emiyaconsulting.emiya_todo_list_api.exception.ItemNotFoundException;
 import com.emiyaconsulting.emiya_todo_list_api.model.Item;
 import com.emiyaconsulting.emiya_todo_list_api.repository.ItemRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,8 +13,6 @@ import java.util.*;
 
 @Service
 public class ItemService {
-    private static final Logger log = LoggerFactory.getLogger(ItemService.class);
-    
     private final ItemRepository itemRepository;
     private final MongoTemplate mongoTemplate;
     
@@ -50,9 +46,10 @@ public class ItemService {
         return mongoTemplate.find(query, Item.class);
     }
 
-    public Item findOneItem(String id) {
-        Optional<Item> optionalItem = itemRepository.findById(id);
-        return optionalItem.orElse(null);
+    public Item findOneItem(String id) throws ItemNotFoundException {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(
+                        String.format("No item with the id %s is available", id)));
     }
     
     public Item updateItem(String id, Item updatedItem) throws ItemNotFoundException {
@@ -79,7 +76,6 @@ public class ItemService {
             
             return itemRepository.save(existingItem);
         }
-        log.info("Could not update item - item with id {} not found", id);
         throw new ItemNotFoundException(String.format("No item with id %s is available", id));
     }
     
@@ -93,7 +89,6 @@ public class ItemService {
             
             return itemRepository.save(existingItem);
         }
-        log.info("Could not flag item as deleted - item with id {} not found", id);
         throw new ItemNotFoundException(String.format("No item with the id %s is available", id));
     }
 }
