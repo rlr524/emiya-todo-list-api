@@ -1,7 +1,7 @@
-package com.emiyaconsulting.emiya_todo_list_api.controller;
+package com.emiyaconsulting.todo_list_api.controller;
 
-import com.emiyaconsulting.emiya_todo_list_api.model.Item;
-import com.emiyaconsulting.emiya_todo_list_api.service.ItemService;
+import com.emiyaconsulting.todo_list_api.model.Item;
+import com.emiyaconsulting.todo_list_api.service.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

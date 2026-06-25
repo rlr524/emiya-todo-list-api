@@ -1,1 +1,1 @@
-rootProject.name = "emiya-todo-list-api"
+rootProject.name = "todo-list-api"

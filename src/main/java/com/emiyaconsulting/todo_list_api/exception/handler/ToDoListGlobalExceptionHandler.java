@@ -1,7 +1,7 @@
-package com.emiyaconsulting.emiya_todo_list_api.exception.handler;
+package com.emiyaconsulting.todo_list_api.exception.handler;
 
-import com.emiyaconsulting.emiya_todo_list_api.exception.ItemNotFoundException;
-import com.emiyaconsulting.emiya_todo_list_api.exception.UserNotFoundException;
+import com.emiyaconsulting.todo_list_api.exception.ItemNotFoundException;
+import com.emiyaconsulting.todo_list_api.exception.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;

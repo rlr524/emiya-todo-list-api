@@ -1,13 +1,11 @@
-package com.emiyaconsulting.emiya_todo_list_api.controller;
+package com.emiyaconsulting.todo_list_api.controller;
 
-import com.emiyaconsulting.emiya_todo_list_api.model.User;
-import com.emiyaconsulting.emiya_todo_list_api.service.UserService;
+import com.emiyaconsulting.todo_list_api.model.User;
+import com.emiyaconsulting.todo_list_api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @Validated

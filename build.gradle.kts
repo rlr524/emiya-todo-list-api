@@ -6,7 +6,7 @@ plugins {
 
 group = "com.emiyaconsulting"
 version = "0.0.1-SNAPSHOT"
-description = "REST API for Emiya ToDo list"
+description = "REST API for ToDo list"
 
 java {
 	toolchain {

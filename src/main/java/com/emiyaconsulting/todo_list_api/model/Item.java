@@ -1,32 +1,27 @@
-package com.emiyaconsulting.emiya_todo_list_api.model;
+package com.emiyaconsulting.todo_list_api.model;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
-import java.util.Set;
+import java.time.LocalDate;
 
 @Getter @Setter @NoArgsConstructor
 @EqualsAndHashCode
-@Document("users")
-public class User {
+@Document("items")
+public class Item {
     @Id
     private String id;
-    @Field("first_name")
-    private String firstName;
     @NonNull
-    @Field("last_name")
-    private String lastName;
-    @NonNull
-    @Field("user_name")
-    private String userName;
-    @NonNull
-    private String email;
-    private boolean active;
+    private String title;
+    private String itemDescription;
+    private LocalDate due;
+    private boolean complete;
+    private String importance;
+    private String owner; // User ID of the user owner of the item
     private boolean deleted;
     private Instant deletedAt;
     @CreatedDate
@@ -34,3 +29,6 @@ public class User {
     @LastModifiedDate
     private Instant updatedAt;
 }
+
+
+

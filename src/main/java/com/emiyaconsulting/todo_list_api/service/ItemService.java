@@ -1,8 +1,8 @@
-package com.emiyaconsulting.emiya_todo_list_api.service;
+package com.emiyaconsulting.todo_list_api.service;
 
-import com.emiyaconsulting.emiya_todo_list_api.exception.ItemNotFoundException;
-import com.emiyaconsulting.emiya_todo_list_api.model.Item;
-import com.emiyaconsulting.emiya_todo_list_api.repository.ItemRepository;
+import com.emiyaconsulting.todo_list_api.exception.ItemNotFoundException;
+import com.emiyaconsulting.todo_list_api.model.Item;
+import com.emiyaconsulting.todo_list_api.repository.ItemRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Criteria;

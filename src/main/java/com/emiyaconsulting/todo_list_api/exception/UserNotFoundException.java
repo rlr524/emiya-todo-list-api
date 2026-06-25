@@ -1,6 +1,4 @@
-package com.emiyaconsulting.emiya_todo_list_api.exception;
-
-import java.util.logging.Logger;
+package com.emiyaconsulting.todo_list_api.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {
