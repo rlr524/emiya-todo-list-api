@@ -15,7 +15,6 @@ import java.time.LocalDate;
 public class Item {
     @Id
     private String id;
-    @NonNull
     private String title;
     private String itemDescription;
     private LocalDate due;

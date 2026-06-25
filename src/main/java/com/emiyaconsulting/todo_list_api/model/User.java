@@ -17,10 +17,8 @@ public class User {
     private String id;
     @Field("first_name")
     private String firstName;
-    @NonNull
     @Field("last_name")
     private String lastName;
-    @NonNull
     @Field("user_name")
     private String userName;
     @NonNull
