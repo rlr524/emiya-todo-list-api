@@ -21,6 +21,7 @@ public class User {
     private String lastName;
     @Field("user_name")
     private String userName;
+    private String password;
     @NonNull
     private String email;
     private boolean active;
