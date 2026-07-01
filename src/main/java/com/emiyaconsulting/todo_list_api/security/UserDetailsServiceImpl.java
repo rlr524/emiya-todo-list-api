@@ -1,4 +1,4 @@
-package com.emiyaconsulting.todo_list_api.config;
+package com.emiyaconsulting.todo_list_api.security;
 
 import com.emiyaconsulting.todo_list_api.model.User;
 import com.emiyaconsulting.todo_list_api.repository.UserRepository;
