@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @Validated
 public class ItemController {
@@ -18,7 +20,8 @@ public class ItemController {
     
     // Insert a single item
     @PostMapping("/item")
-    public ResponseEntity<Item> createItem(@Valid @RequestBody Item item) {
+    public ResponseEntity<Item> createItem(@Valid @RequestBody Item item, Principal principal) {
+        item.setOwner(principal.getName());
         return ResponseEntity.ok(itemService.createItem(item));
     }
     
@@ -32,6 +35,12 @@ public class ItemController {
     @GetMapping("/items/{id}")
     public Iterable<Item> getItemsByUser(@PathVariable String id) {
         return itemService.getItemsByUser(id);
+    }
+    
+    // Return all items for the logged-in user
+    @GetMapping("/items/mine")
+    public ResponseEntity<Iterable<Item>> getMyItems(Principal principal) {
+        return ResponseEntity.ok(itemService.getItemsByUser(principal.getName()));
     }
     
     @GetMapping("/item/{id}")
