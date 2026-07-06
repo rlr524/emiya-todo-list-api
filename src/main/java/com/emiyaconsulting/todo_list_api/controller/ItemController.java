@@ -43,11 +43,13 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItemsByUser(principal.getName()));
     }
     
+    // Return one item by the item's id
     @GetMapping("/item/{id}")
     public Item getItem(@PathVariable String id) {
         return itemService.findOneItem(id);
     }
     
+    // Update one or more fields on an item by item id
     @PutMapping("/item/{id}")
     public ResponseEntity<Item> updatedItem(@PathVariable String id, @RequestBody Item itemDetails) {
         Item updatedItem = itemService.updateItem(id, itemDetails);
@@ -57,15 +59,27 @@ public class ItemController {
         return ResponseEntity.notFound().build();
     }
     
-    @DeleteMapping("/item/{id}")
-    public ResponseEntity<Item> deleteItem(@PathVariable String id) {
-        Item deletedItem = itemService.deleteItem(id);
-        if (deletedItem != null) {
-            return ResponseEntity.ok(deletedItem);
+    // Mark one item as completed by item id
+    @PatchMapping("/item/{id}")
+    public ResponseEntity<Item> completeItem(@PathVariable String id) {
+        Item item = itemService.findOneItem(id);
+        if (item != null) {
+            itemService.completeItem(id);
+            return ResponseEntity.ok(item);
         }
         return ResponseEntity.notFound().build();
     }
     
+    // Mark one item as deleted by item it
+    @DeleteMapping("/item/{id}")
+    public ResponseEntity<Item> deleteItem(@PathVariable String id) {
+        Item item = itemService.findOneItem(id);
+        if (item != null) {
+            itemService.deleteItem(id);
+            return ResponseEntity.ok(item);
+        }
+        return ResponseEntity.notFound().build();
+    }
     
     // Healthcheck
     @GetMapping("/")

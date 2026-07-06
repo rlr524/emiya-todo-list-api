@@ -79,6 +79,17 @@ public class ItemService {
         throw new ItemNotFoundException(String.format("No item with id %s is available", id));
     }
     
+    // Set the Complete field on an existing item to true
+    public Item completeItem(String id) throws ItemNotFoundException {
+        Optional<Item> optionalItem = itemRepository.findById(id);
+        if (optionalItem.isPresent()) {
+            Item existingItem = optionalItem.get();
+            existingItem.setComplete(true);
+            return itemRepository.save(existingItem);
+        }
+        throw new ItemNotFoundException(String.format("No item with the id %s is available", id));
+    }
+    
     // Performs a soft delete setting the deleted flag to true and setting deletedAt to the current datetime
     public Item deleteItem(String id) throws ItemNotFoundException {
         Optional<Item> optionalItem = itemRepository.findById(id);
