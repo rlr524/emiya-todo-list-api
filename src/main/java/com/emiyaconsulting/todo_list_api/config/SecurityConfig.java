@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/healthcheck",
                                 "/auth/login", 
                                 "/auth/register", 
                                 "/swagger-ui/**", 

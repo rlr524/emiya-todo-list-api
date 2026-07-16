@@ -80,10 +80,4 @@ public class ItemController {
         }
         return ResponseEntity.notFound().build();
     }
-    
-    // Healthcheck
-    @GetMapping("/")
-    public String healthCheck() {
-        return "OK";
-    }
 }
