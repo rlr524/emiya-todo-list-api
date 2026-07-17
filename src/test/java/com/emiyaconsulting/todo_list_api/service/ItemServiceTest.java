@@ -33,11 +33,11 @@ class ItemServiceTest {
     void updateItem_allFieldsProvided_updateAllFields() {
         // Arrange: build an "existingItem" (what's currently in the DB)
         Item existingItem = new Item();
-        existingItem.setTitle("Old Title");
-        existingItem.setItemDescription("Old description");
+        existingItem.setTitle("Item Title");
+        existingItem.setItemDescription("Item description");
         existingItem.setImportance("LOW");
-        existingItem.setDue(LocalDate.of(2026, 1, 1));
-        existingItem.setOwner("user-1");
+        existingItem.setDue(LocalDate.of(2026, 7, 16));
+        existingItem.setOwner("someuser");
         existingItem.setComplete(false);
 
         // and an "updatedItem" (the incoming change with all fields set)
@@ -46,7 +46,7 @@ class ItemServiceTest {
         updatedItem.setItemDescription("New description");
         updatedItem.setImportance("HIGH");
         updatedItem.setDue(LocalDate.of(2026, 12, 31));
-        updatedItem.setOwner("user-2");
+        updatedItem.setOwner("someotheruser");
         updatedItem.setComplete(true);
 
         // Stub: return the existing item for the lookup, and echo back whatever is saved
@@ -61,7 +61,7 @@ class ItemServiceTest {
         assertEquals("New description", result.getItemDescription());
         assertEquals("HIGH", result.getImportance());
         assertEquals(LocalDate.of(2026, 12, 31), result.getDue());
-        assertEquals("user-2", result.getOwner());
+        assertEquals("someotheruser", result.getOwner());
         assertTrue(result.isComplete());
     }
 
