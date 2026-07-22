@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/items", // TODO: Remove in production once auth set up
                                 "/healthcheck",
                                 "/auth/login", 
                                 "/auth/register", 
