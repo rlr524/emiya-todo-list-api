@@ -1,5 +1,6 @@
 package com.emiyaconsulting.todo_list_api.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -20,9 +21,11 @@ public class User {
     @Field("last_name")
     private String lastName;
     @Field("user_name")
+    @NotNull
     private String userName;
+    @NotNull
     private String password;
-    @NonNull
+    @NotNull
     private String email;
     private boolean active;
     private boolean deleted;
