@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+// Unit tests for AuthController's login and register endpoints
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
     @Mock
@@ -33,6 +34,7 @@ class AuthControllerTest {
     @InjectMocks
     private AuthController authController;
 
+    // Correct credentials should return a JWT in the response body
     @Test
     void userLogin_validCredentials_returnsOkWithToken() {
         LoginRequest loginRequest = new LoginRequest();
@@ -49,6 +51,7 @@ class AuthControllerTest {
                 new UsernamePasswordAuthenticationToken("someuser", "password"));
     }
 
+    // Wrong credentials should fail authentication instead of issuing a token
     @Test
     void userLogin_invalidCredentials_throwsBadCredentialsException() {
         LoginRequest loginRequest = new LoginRequest();
@@ -62,6 +65,7 @@ class AuthControllerTest {
         verifyNoInteractions(jwtUtil);
     }
 
+    // A new username should register successfully and return the saved user
     @Test
     void register_newUser_returnsOkWithCreatedUser() {
         User user = new User();
@@ -79,6 +83,7 @@ class AuthControllerTest {
         assertEquals(savedUser, response.getBody());
     }
 
+    // Registering an already-taken username should fail instead of overwriting the existing user
     @Test
     void register_duplicateUserName_throwsDuplicateKeyException() {
         User user = new User();

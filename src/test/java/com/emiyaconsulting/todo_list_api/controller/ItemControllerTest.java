@@ -17,6 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+// Unit tests for ItemController's CRUD and completion endpoints
 @ExtendWith(MockitoExtension.class)
 class ItemControllerTest {
     @Mock
@@ -28,6 +29,7 @@ class ItemControllerTest {
     @InjectMocks
     private ItemController itemController;
 
+    // Creating an item should stamp the logged-in user as owner and return the saved item
     @Test
     void createItem_returnsOkWithCreatedItem() {
         Item item = new Item();
@@ -49,6 +51,7 @@ class ItemControllerTest {
         verify(itemService).createItem(item);
     }
 
+    // Listing items should return everything the service provides
     @Test
     void getItems_returnsAllItems() {
         Item item = new Item();
@@ -61,6 +64,7 @@ class ItemControllerTest {
         assertEquals(List.of(item), result);
     }
 
+    // Listing items for a given user id should only return that user's items
     @Test
     void getItemsByUser_returnsItemsForUser() {
         Item item = new Item();
@@ -74,6 +78,7 @@ class ItemControllerTest {
         assertEquals(List.of(item), result);
     }
 
+    // "My items" should use the logged-in principal, not an explicit user id
     @Test
     void getMyItems_returnsOkWithItemsForLoggedInUser() {
         Item item = new Item();
@@ -89,6 +94,7 @@ class ItemControllerTest {
         assertEquals(List.of(item), response.getBody());
     }
 
+    // Fetching a known item id should return that item
     @Test
     void getItem_itemExists_returnsItem() {
         Item item = new Item();
@@ -101,6 +107,7 @@ class ItemControllerTest {
         assertEquals(item, result);
     }
 
+    // Fetching an unknown item id should throw instead of returning null
     @Test
     void getItem_itemNotFound_throwsItemNotFoundException() {
         when(itemService.findOneItem("missing-id"))
@@ -109,6 +116,7 @@ class ItemControllerTest {
         assertThrows(ItemNotFoundException.class, () -> itemController.getItem("missing-id"));
     }
 
+    // Updating an existing item should return the updated item with an OK status
     @Test
     void updatedItem_itemExists_returnsOkWithUpdatedItem() {
         Item itemDetails = new Item();
@@ -125,6 +133,7 @@ class ItemControllerTest {
         assertEquals(updatedItem, response.getBody());
     }
 
+    // Updating a missing item should return 404 rather than throwing
     @Test
     void updatedItem_itemNotFound_returnsNotFound() {
         Item itemDetails = new Item();
@@ -138,6 +147,7 @@ class ItemControllerTest {
         assertNull(response.getBody());
     }
 
+    // Completing an existing item should mark it complete and return it
     @Test
     void completeItem_itemExists_returnsOkWithCompletedItem() {
         Item item = new Item();
@@ -152,6 +162,7 @@ class ItemControllerTest {
         verify(itemService).completeItem("item-1");
     }
 
+    // Completing a missing item should return 404 and never call the service to complete it
     @Test
     void completeItem_itemNotFound_returnsNotFound() {
         when(itemService.findOneItem("missing-id")).thenReturn(null);
@@ -163,6 +174,7 @@ class ItemControllerTest {
         verify(itemService, never()).completeItem(anyString());
     }
 
+    // Deleting an existing item should return the deleted item
     @Test
     void deleteItem_itemExists_returnsOkWithDeletedItem() {
         Item item = new Item();
@@ -177,6 +189,7 @@ class ItemControllerTest {
         verify(itemService).deleteItem("item-1");
     }
 
+    // Deleting a missing item should return 404 and never call the service to delete it
     @Test
     void deleteItem_itemNotFound_returnsNotFound() {
         when(itemService.findOneItem("missing-id")).thenReturn(null);

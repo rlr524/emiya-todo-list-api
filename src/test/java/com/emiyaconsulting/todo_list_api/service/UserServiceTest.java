@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+// Unit tests for UserService's business logic
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
@@ -32,6 +33,7 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    // Creating a user should encode the raw password before saving
     @Test
     void createUser_encodesPasswordAndSaves() {
         User user = new User();
@@ -49,6 +51,7 @@ class UserServiceTest {
         verify(userRepository).save(user);
     }
 
+    // The user list should filter out soft-deleted users
     @Test
     void getUsers_excludesDeletedUsers() {
         User activeUser = new User();
@@ -69,6 +72,7 @@ class UserServiceTest {
         assertEquals("active", resultList.getFirst().getUserName());
     }
 
+    // Fetching a known user id should return that user
     @Test
     void findOneUser_userExists_returnsUser() throws UserNotFoundException {
         User existingUser = new User();
@@ -81,6 +85,7 @@ class UserServiceTest {
         assertEquals("someuser", result.getUserName());
     }
 
+    // Fetching an unknown user id should throw instead of returning null
     @Test
     void findOneUser_userNotFound_throwsUserNotFoundException() {
         when(userRepository.findById("missing-id")).thenReturn(Optional.empty());
@@ -89,6 +94,7 @@ class UserServiceTest {
                 () -> userService.findOneUser("missing-id"));
     }
 
+    // Supplying every field should overwrite every corresponding field on the existing user
     @Test
     void updateUser_allFieldsProvided_updatesAllFields() throws UserNotFoundException {
         User existingUser = new User();
@@ -114,6 +120,7 @@ class UserServiceTest {
         assertEquals("newuser@example.com", result.getEmail());
     }
 
+    // Leaving fields null on the update should keep the existing user's values for those fields
     @Test
     void updateUser_partialFieldsProvided_retainsExistingValues() throws UserNotFoundException {
         User existingUser = new User();
@@ -137,6 +144,7 @@ class UserServiceTest {
         assertEquals("someuser@example.com", result.getEmail());
     }
 
+    // Updating a missing user should throw instead of creating one
     @Test
     void updateUser_userNotFound_throwsUserNotFoundException() {
         when(userRepository.findById("missing-id")).thenReturn(Optional.empty());
@@ -148,6 +156,7 @@ class UserServiceTest {
                 () -> userService.updateUser("missing-id", updatedUser));
     }
 
+    // Deleting a user should soft-delete it: mark it deleted, inactive, and timestamp it
     @Test
     void deleteUser_userExists_marksUserDeletedAndInactive() throws UserNotFoundException {
         User existingUser = new User();
@@ -164,6 +173,7 @@ class UserServiceTest {
         assertNotNull(result.getDeletedAt());
     }
 
+    // Deleting a missing user should throw instead of silently doing nothing
     @Test
     void deleteUser_userNotFound_throwsUserNotFoundException() {
         when(userRepository.findById("missing-id")).thenReturn(Optional.empty());
@@ -172,6 +182,7 @@ class UserServiceTest {
                 () -> userService.deleteUser("missing-id"));
     }
 
+    // Deactivating a user should mark it inactive without deleting it
     @Test
     void deactivateUser_userExists_marksUserInactive() throws UserNotFoundException {
         User existingUser = new User();
@@ -185,6 +196,7 @@ class UserServiceTest {
         assertFalse(result.isActive());
     }
 
+    // Deactivating a missing user should throw instead of silently doing nothing
     @Test
     void deactivateUser_userNotFound_throwsUserNotFoundException() {
         when(userRepository.findById("missing-id")).thenReturn(Optional.empty());

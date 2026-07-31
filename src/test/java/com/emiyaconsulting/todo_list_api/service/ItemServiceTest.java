@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+// Unit tests for ItemService's update logic
 @ExtendWith(MockitoExtension.class)
 class ItemServiceTest {
 

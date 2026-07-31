@@ -16,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+// Unit tests for UserController's CRUD endpoints
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
     @Mock
@@ -24,6 +25,7 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
+    // Creating a user should return the saved user with an OK status
     @Test
     void createUser_returnsOkWithCreatedUser() {
         User user = new User();
@@ -42,6 +44,7 @@ class UserControllerTest {
         verify(userService).createUser(user);
     }
 
+    // Listing users should return everything the service provides
     @Test
     void getUsers_returnsAllUsers() {
         User user = new User();
@@ -54,6 +57,7 @@ class UserControllerTest {
         assertEquals(List.of(user), result);
     }
 
+    // Fetching a known user id should return that user
     @Test
     void getUser_userExists_returnsUser() {
         User user = new User();
@@ -66,6 +70,7 @@ class UserControllerTest {
         assertEquals(user, result);
     }
 
+    // Fetching an unknown user id should throw instead of returning null
     @Test
     void getUser_userNotFound_throwsUserNotFoundException() {
         when(userService.findOneUser("missing-id"))
@@ -74,6 +79,7 @@ class UserControllerTest {
         assertThrows(UserNotFoundException.class, () -> userController.getUser("missing-id"));
     }
 
+    // Updating an existing user should return the updated user with an OK status
     @Test
     void updateUser_userExists_returnsOkWithUpdatedUser() {
         User userDetails = new User();
@@ -90,6 +96,7 @@ class UserControllerTest {
         assertEquals(updatedUser, response.getBody());
     }
 
+    // Updating a missing user should return 404 rather than throwing
     @Test
     void updateUser_userNotFound_returnsNotFound() {
         User userDetails = new User();
@@ -103,6 +110,7 @@ class UserControllerTest {
         assertNull(response.getBody());
     }
 
+    // Deleting an existing user should return the now-deleted user
     @Test
     void deleteUser_userExists_returnsOkWithDeletedUser() {
         User deletedUser = new User();
@@ -116,6 +124,7 @@ class UserControllerTest {
         assertEquals(deletedUser, response.getBody());
     }
 
+    // Deleting a missing user should return 404
     @Test
     void deleteUser_userNotFound_returnsNotFound() {
         when(userService.deleteUser("missing-id")).thenReturn(null);
@@ -126,6 +135,7 @@ class UserControllerTest {
         assertNull(response.getBody());
     }
 
+    // Deactivating an existing user should return the now-inactive user
     @Test
     void deactivateUser_userExists_returnsOkWithDeactivatedUser() {
         User deactivatedUser = new User();
@@ -139,6 +149,7 @@ class UserControllerTest {
         assertEquals(deactivatedUser, response.getBody());
     }
 
+    // Deactivating a missing user should return 404
     @Test
     void deactivateUser_userNotFound_returnsNotFound() {
         when(userService.deactivateUser("missing-id")).thenReturn(null);
