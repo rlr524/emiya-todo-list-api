@@ -58,6 +58,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session 
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(userDetailsService)
+                // Use relative paths to http://domain/api/v1 to exclude paths from needing auth
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/healthcheck",
