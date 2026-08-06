@@ -1,0 +1,64 @@
+name: Build and Deploy ToDo App
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ---- Checkout source code ----
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ---- Set up Java to match the server's runtime ----
+      - name: Set up JDK 21 (Temurin build)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # ---- Build the jar ----
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      # ---- Load the deployment SSH key into an agent ----
+      - name: Set up SSH agent
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/ghactions_deploy_key
+          chmod 600 ~/.ssh/ghactions_deploy_key
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/ghactions_deploy_key
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
+
+      # ---- Avoid host key verification prompt on first connect ----
+      - name: Add server to known_hosts
+        run: |
+          ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      # ---- Copy the built jar to the server ----
+      - name: Copy jar to server
+        run: |
+          scp -P ${{ secrets.SERVER_PORT }} \
+            build/libs/app.jar \
+            ghactions@${{ secrets.SERVER_HOST }}:~/app.jar
+
+      # ---- Move into place, fix ownership, restart the service ----
+      - name: Deploy jar on server
+        run: |
+          ssh -p ${{ secrets.SERVER_PORT }} ghactions@${{ secrets.SERVER_HOST }} '
+            set -e
+            sudo mv /home/ghactions/app.jar /opt/dramaapp/app.jar
+            sudo chown dramaappsvc:dramaappsvc /opt/dramaapp/app.jar
+            sudo systemctl daemon-reload
+            sudo systemctl restart dramaappsvc
+          '
+
+      # ---- Clean up the private key from the runner filesystem ----
+      - name: Clean up SSH key
+        if: always()
+        run: rm -f ~/.ssh/ghactions_deploy_key
