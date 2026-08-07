@@ -42,6 +42,10 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 }
 
+tasks.bootJar {
+	archiveFileName.set("app.jar")
+}
+
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
