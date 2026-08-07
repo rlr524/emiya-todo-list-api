@@ -54,10 +54,10 @@ jobs:
         run: |
           ssh -p ${{ secrets.SERVER_PORT }} ghactions@${{ secrets.SERVER_HOST }} '
             set -e
-            sudo mv /home/ghactions/app.jar /opt/dramaapp/app.jar
-            sudo chown dramaappsvc:dramaappsvc /opt/dramaapp/app.jar
+            sudo mv /home/ghactions/app.jar /opt/todolist/app.jar
+            sudo chown todolistapp:todolistapp /opt/todolist/app.jar
             sudo systemctl daemon-reload
-            sudo systemctl restart dramaappsvc
+            sudo systemctl restart todolistapp.service
           '
 
       # ---- Clean up the private key from the runner filesystem ----
