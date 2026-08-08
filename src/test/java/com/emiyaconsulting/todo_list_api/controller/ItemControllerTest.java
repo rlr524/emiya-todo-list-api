@@ -36,7 +36,7 @@ class ItemControllerTest {
     @Test
     void createItem_returnsOkWithCreatedItem() {
         CreateItemRequest request = new CreateItemRequest(
-                "Buy Milk", 
+                "Buy milk", 
                 "From the store", 
                 LocalDate.of(2026, 8, 12), 
                 "High"
@@ -44,7 +44,7 @@ class ItemControllerTest {
 
         Item savedItem = new Item();
         savedItem.setId("item-1");
-        savedItem.setTitle("Buy Milk");
+        savedItem.setTitle("Buy milk");
         savedItem.setItemDescription("From the store");
         savedItem.setDue(LocalDate.of(2026, 8, 12));
         savedItem.setImportance("High");
