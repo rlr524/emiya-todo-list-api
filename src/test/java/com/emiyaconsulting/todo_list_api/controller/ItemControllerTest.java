@@ -1,10 +1,12 @@
 package com.emiyaconsulting.todo_list_api.controller;
 
+import com.emiyaconsulting.todo_list_api.dto.CreateItemRequest;
 import com.emiyaconsulting.todo_list_api.exception.ItemNotFoundException;
 import com.emiyaconsulting.todo_list_api.model.Item;
 import com.emiyaconsulting.todo_list_api.service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,23 +35,38 @@ class ItemControllerTest {
     // Creating an item should stamp the logged-in user as owner and return the saved item
     @Test
     void createItem_returnsOkWithCreatedItem() {
-        Item item = new Item();
-        item.setTitle("Buy milk");
+        CreateItemRequest request = new CreateItemRequest(
+                "Buy Milk", 
+                "From the store", 
+                LocalDate.of(2026, 8, 12), 
+                "High"
+        );
 
         Item savedItem = new Item();
         savedItem.setId("item-1");
-        savedItem.setTitle("Buy milk");
+        savedItem.setTitle("Buy Milk");
+        savedItem.setItemDescription("From the store");
+        savedItem.setDue(LocalDate.of(2026, 8, 12));
+        savedItem.setImportance("High");
         savedItem.setOwner("someuser");
-
+        
         when(principal.getName()).thenReturn("someuser");
-        when(itemService.createItem(item)).thenReturn(savedItem);
 
-        ResponseEntity<Item> response = itemController.createItem(item, principal);
+        ArgumentCaptor<Item> itemArgumentCaptor = ArgumentCaptor.forClass(Item.class);
+        when (itemService.createItem(itemArgumentCaptor.capture())).thenReturn(savedItem);
+        
+        ResponseEntity<Item> response = itemController.createItem(request, principal);
+        
+        Item capturedItem = itemArgumentCaptor.getValue();
+        assertEquals("Buy milk", capturedItem.getTitle());
+        assertEquals("From the store", capturedItem.getItemDescription());
+        assertEquals(LocalDate.of(2026, 8, 12), capturedItem.getDue());
+        assertEquals("High", capturedItem.getImportance());
+        assertEquals("someuser", capturedItem.getOwner());
+        assertFalse(capturedItem.isDeleted());
 
-        assertEquals("someuser", item.getOwner());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(savedItem, response.getBody());
-        verify(itemService).createItem(item);
     }
 
     // Listing items should return everything the service provides

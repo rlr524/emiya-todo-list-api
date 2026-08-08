@@ -1,5 +1,6 @@
 package com.emiyaconsulting.todo_list_api.controller;
 
+import com.emiyaconsulting.todo_list_api.dto.CreateItemRequest;
 import com.emiyaconsulting.todo_list_api.model.Item;
 import com.emiyaconsulting.todo_list_api.service.ItemService;
 import jakarta.validation.Valid;
@@ -20,8 +21,14 @@ public class ItemController {
     
     // Insert a single item
     @PostMapping("/item")
-    public ResponseEntity<Item> createItem(@Valid @RequestBody Item item, Principal principal) {
+    public ResponseEntity<Item> createItem(@Valid @RequestBody CreateItemRequest request, Principal principal) {
+        Item item = new Item();
+        item.setTitle(request.title());
+        item.setItemDescription(request.itemDescription());
+        item.setDue(request.due());
+        item.setImportance(request.importance());
         item.setOwner(principal.getName());
+        item.setDeleted(false);
         return ResponseEntity.ok(itemService.createItem(item));
     }
     
