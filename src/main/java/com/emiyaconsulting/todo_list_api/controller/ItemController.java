@@ -1,6 +1,7 @@
 package com.emiyaconsulting.todo_list_api.controller;
 
 import com.emiyaconsulting.todo_list_api.dto.CreateItemRequest;
+import com.emiyaconsulting.todo_list_api.exception.ItemNotFoundException;
 import com.emiyaconsulting.todo_list_api.model.Item;
 import com.emiyaconsulting.todo_list_api.service.ItemService;
 import jakarta.validation.Valid;
@@ -68,23 +69,15 @@ public class ItemController {
     
     // Mark one item as completed by item id
     @PatchMapping("/item/{id}")
-    public ResponseEntity<Item> completeItem(@PathVariable String id) {
-        Item item = itemService.findOneItem(id);
-        if (item != null) {
-            itemService.completeItem(id);
-            return ResponseEntity.ok(item);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Item> completeItem(@PathVariable String id) throws ItemNotFoundException {
+        Item completedItem = itemService.completeItem(id);
+        return ResponseEntity.ok(completedItem);
     }
     
     // Mark one item as deleted by item it
     @DeleteMapping("/item/{id}")
-    public ResponseEntity<Item> deleteItem(@PathVariable String id) {
-        Item item = itemService.findOneItem(id);
-        if (item != null) {
-            itemService.deleteItem(id);
-            return ResponseEntity.ok(item);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Item> deleteItem(@PathVariable String id) throws ItemNotFoundException {
+        Item flaggedAsDeletedItem = itemService.deleteItem(id);
+        return ResponseEntity.ok(flaggedAsDeletedItem);
     }
 }
