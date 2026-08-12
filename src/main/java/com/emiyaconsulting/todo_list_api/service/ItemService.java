@@ -49,7 +49,7 @@ public class ItemService {
     public Item findOneItem(String id) throws ItemNotFoundException {
         return itemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(
-                        String.format("No item with the id %s is available", id)));
+                        String.format("(findOneItem: Lookup failed: No item with the id %s", id)));
     }
     
     public Item updateItem(String id, Item updatedItem) throws ItemNotFoundException {
@@ -76,7 +76,8 @@ public class ItemService {
             
             return itemRepository.save(existingItem);
         }
-        throw new ItemNotFoundException(String.format("No item with id %s is available", id));
+        throw new ItemNotFoundException(String.format("updateItem: Update failed: " +
+                "No item with id %s", id));
     }
     
     // Set the Complete field on an existing item to true
@@ -87,7 +88,8 @@ public class ItemService {
             existingItem.setComplete(true);
             return itemRepository.save(existingItem);
         }
-        throw new ItemNotFoundException(String.format("No item with the id %s is available", id));
+        throw new ItemNotFoundException(String.format("completeItem: Complete failed: " +
+                "No item with the id %s", id));
     }
     
     // Performs a soft delete setting the deleted flag to true and setting deletedAt to the current datetime
@@ -100,6 +102,7 @@ public class ItemService {
             
             return itemRepository.save(existingItem);
         }
-        throw new ItemNotFoundException(String.format("No item with the id %s is available", id));
+        throw new ItemNotFoundException(String.format("deleteItem: Delete failed: " +
+                "No item with the id %s", id));
     }
 }

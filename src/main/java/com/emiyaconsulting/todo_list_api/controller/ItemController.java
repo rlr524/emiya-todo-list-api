@@ -1,6 +1,7 @@
 package com.emiyaconsulting.todo_list_api.controller;
 
 import com.emiyaconsulting.todo_list_api.dto.CreateItemRequest;
+import com.emiyaconsulting.todo_list_api.exception.ItemNotFoundException;
 import com.emiyaconsulting.todo_list_api.model.Item;
 import com.emiyaconsulting.todo_list_api.service.ItemService;
 import jakarta.validation.Valid;
@@ -58,33 +59,23 @@ public class ItemController {
     
     // Update one or more fields on an item by item id
     @PutMapping("/item/{id}")
-    public ResponseEntity<Item> updatedItem(@PathVariable String id, @RequestBody Item itemDetails) {
+    public ResponseEntity<Item> updateItem(@PathVariable String id, @RequestBody Item itemDetails) 
+            throws ItemNotFoundException {
         Item updatedItem = itemService.updateItem(id, itemDetails);
-        if (updatedItem != null) {
-            return ResponseEntity.ok(updatedItem);
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(updatedItem);
     }
     
     // Mark one item as completed by item id
     @PatchMapping("/item/{id}")
-    public ResponseEntity<Item> completeItem(@PathVariable String id) {
-        Item item = itemService.findOneItem(id);
-        if (item != null) {
-            itemService.completeItem(id);
-            return ResponseEntity.ok(item);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Item> completeItem(@PathVariable String id) throws ItemNotFoundException {
+        Item completedItem = itemService.completeItem(id);
+        return ResponseEntity.ok(completedItem);
     }
     
     // Mark one item as deleted by item it
     @DeleteMapping("/item/{id}")
-    public ResponseEntity<Item> deleteItem(@PathVariable String id) {
-        Item item = itemService.findOneItem(id);
-        if (item != null) {
-            itemService.deleteItem(id);
-            return ResponseEntity.ok(item);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Item> deleteItem(@PathVariable String id) throws ItemNotFoundException {
+        Item flaggedAsDeletedItem = itemService.deleteItem(id);
+        return ResponseEntity.ok(flaggedAsDeletedItem);
     }
 }
