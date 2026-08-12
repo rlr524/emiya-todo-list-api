@@ -136,7 +136,7 @@ class ItemControllerTest {
 
     // Updating an existing item should return the updated item with an OK status
     @Test
-    void updatedItem_itemExists_returnsOkWithUpdatedItem() {
+    void updateItem_itemExists_returnsOkWithUpdatedItem() {
         Item itemDetails = new Item();
         itemDetails.setTitle("New title");
 
@@ -145,24 +145,24 @@ class ItemControllerTest {
 
         when(itemService.updateItem("item-1", itemDetails)).thenReturn(updatedItem);
 
-        ResponseEntity<Item> response = itemController.updatedItem("item-1", itemDetails);
+        ResponseEntity<Item> response = itemController.updateItem("item-1", itemDetails);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(updatedItem, response.getBody());
+        verify(itemService).updateItem("item-1", itemDetails);
     }
 
-    // Updating a missing item should return 404 rather than throwing
+    // Updating a missing item should propagate ItemNotFoundException from the service
     @Test
-    void updatedItem_itemNotFound_returnsNotFound() {
+    void updateItem_itemNotFound_throwsItemNotFoundException() {
         Item itemDetails = new Item();
         itemDetails.setTitle("New title");
 
-        when(itemService.updateItem("missing-id", itemDetails)).thenReturn(null);
-
-        ResponseEntity<Item> response = itemController.updatedItem("missing-id", itemDetails);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
+        when(itemService.updateItem("missing-id", itemDetails))
+                .thenThrow(new ItemNotFoundException("Update failed: no item with missing-id"));
+        
+        assertThrows(ItemNotFoundException.class, 
+                () -> itemController.updateItem("missing-id", itemDetails));
     }
 
     // Completing an existing item should mark it complete and return it

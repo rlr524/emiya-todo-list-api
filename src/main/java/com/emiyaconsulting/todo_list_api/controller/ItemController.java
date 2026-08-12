@@ -59,12 +59,10 @@ public class ItemController {
     
     // Update one or more fields on an item by item id
     @PutMapping("/item/{id}")
-    public ResponseEntity<Item> updatedItem(@PathVariable String id, @RequestBody Item itemDetails) {
+    public ResponseEntity<Item> updateItem(@PathVariable String id, @RequestBody Item itemDetails) 
+            throws ItemNotFoundException {
         Item updatedItem = itemService.updateItem(id, itemDetails);
-        if (updatedItem != null) {
-            return ResponseEntity.ok(updatedItem);
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(updatedItem);
     }
     
     // Mark one item as completed by item id
