@@ -168,54 +168,52 @@ class ItemControllerTest {
     // Completing an existing item should mark it complete and return it
     @Test
     void completeItem_itemExists_returnsOkWithCompletedItem() {
-        Item item = new Item();
-        item.setTitle("Buy milk");
+        Item completedItem = new Item();
+        completedItem.setTitle("Buy milk");
+        completedItem.setComplete(true);
 
-        when(itemService.findOneItem("item-1")).thenReturn(item);
+        when(itemService.completeItem("item-1")).thenReturn(completedItem);
 
         ResponseEntity<Item> response = itemController.completeItem("item-1");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(item, response.getBody());
+        assertEquals(completedItem, response.getBody());
         verify(itemService).completeItem("item-1");
     }
 
     // Completing a missing item should return 404 and never call the service to complete it
     @Test
-    void completeItem_itemNotFound_returnsNotFound() {
-        when(itemService.findOneItem("missing-id")).thenReturn(null);
-
-        ResponseEntity<Item> response = itemController.completeItem("missing-id");
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
-        verify(itemService, never()).completeItem(anyString());
+    void completeItem_itemNotFound_throwsItemNotFoundException() {
+        when(itemService.completeItem("missing-id"))
+                .thenThrow(new ItemNotFoundException("Complete failed: no item with missing-id "));
+        
+        assertThrows(ItemNotFoundException.class, 
+                () -> itemController.completeItem("missing-id"));
     }
 
     // Deleting an existing item should return the deleted item
     @Test
     void deleteItem_itemExists_returnsOkWithDeletedItem() {
-        Item item = new Item();
-        item.setTitle("Buy milk");
+        Item deletedItem = new Item();
+        deletedItem.setTitle("Buy milk");
+        deletedItem.setDeleted(true);
 
-        when(itemService.findOneItem("item-1")).thenReturn(item);
+        when(itemService.deleteItem("item-1")).thenReturn(deletedItem);
 
         ResponseEntity<Item> response = itemController.deleteItem("item-1");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(item, response.getBody());
+        assertEquals(deletedItem, response.getBody());
         verify(itemService).deleteItem("item-1");
     }
 
     // Deleting a missing item should return 404 and never call the service to delete it
     @Test
-    void deleteItem_itemNotFound_returnsNotFound() {
-        when(itemService.findOneItem("missing-id")).thenReturn(null);
-
-        ResponseEntity<Item> response = itemController.deleteItem("missing-id");
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
-        verify(itemService, never()).deleteItem(anyString());
+    void deleteItem_itemNotFound_throwsItemNotFoundException() {
+        when(itemService.deleteItem("missing-id"))
+                .thenThrow(new ItemNotFoundException("Delete failed: no item with missing-id"));
+        
+        assertThrows(ItemNotFoundException.class, 
+                () -> itemController.deleteItem("missing-id"));
     }
 }
