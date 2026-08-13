@@ -3,6 +3,8 @@ package com.emiyaconsulting.todo_list_api.service;
 import com.emiyaconsulting.todo_list_api.exception.ItemNotFoundException;
 import com.emiyaconsulting.todo_list_api.model.Item;
 import com.emiyaconsulting.todo_list_api.repository.ItemRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,6 +17,7 @@ import java.util.*;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final MongoTemplate mongoTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(ItemService.class);
     
     public ItemService(ItemRepository itemRepository, MongoTemplate mongoTemplate) {
         this.itemRepository = itemRepository;
@@ -22,7 +25,9 @@ public class ItemService {
     }
     
     public Item createItem(Item item) {
-        return itemRepository.save(item);
+        Item savedItem = itemRepository.save(item);
+        logger.info("Created item {} for owner {}", savedItem.getId(), savedItem.getOwner());
+        return savedItem;
     }
     
     public Iterable<Item> getItems() {
@@ -35,6 +40,8 @@ public class ItemService {
             }
         }
         
+        logger.debug("Returning {} non-deleted items out of {} total", 
+                returnedItems.size(), items.size());
         return returnedItems;
     }
     
@@ -43,7 +50,9 @@ public class ItemService {
                 Criteria.where("owner").is(userName), 
                 Criteria.where("deleted").is(false)
         ));
-        return mongoTemplate.find(query, Item.class);
+        List<Item> items = mongoTemplate.find(query, Item.class);
+        logger.debug("Found {} items for owner {}", items.size(), userName);
+        return items;
     }
 
     public Item findOneItem(String id) throws ItemNotFoundException {
@@ -74,7 +83,9 @@ public class ItemService {
                     : optionalItem.get().getOwner());
             existingItem.setComplete(updatedItem.isComplete());
             
-            return itemRepository.save(existingItem);
+            Item saved = itemRepository.save(existingItem);
+            logger.info("Updated item {}", id);
+            return saved;
         }
         throw new ItemNotFoundException(String.format("updateItem: Update failed: " +
                 "No item with id %s", id));
@@ -86,7 +97,9 @@ public class ItemService {
         if (optionalItem.isPresent()) {
             Item existingItem = optionalItem.get();
             existingItem.setComplete(true);
-            return itemRepository.save(existingItem);
+            Item saved = itemRepository.save(existingItem);
+            logger.info("Marked item {} complete", id);
+            return saved;
         }
         throw new ItemNotFoundException(String.format("completeItem: Complete failed: " +
                 "No item with the id %s", id));
@@ -100,7 +113,9 @@ public class ItemService {
             existingItem.setDeleted(true);
             existingItem.setDeletedAt(Instant.now());
             
-            return itemRepository.save(existingItem);
+            Item saved = itemRepository.save(existingItem);
+            logger.info("Set deleted flag to true item {}", id);
+            return saved;
         }
         throw new ItemNotFoundException(String.format("deleteItem: Delete failed: " +
                 "No item with the id %s", id));
