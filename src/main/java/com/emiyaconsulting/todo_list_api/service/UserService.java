@@ -3,6 +3,8 @@ package com.emiyaconsulting.todo_list_api.service;
 import com.emiyaconsulting.todo_list_api.exception.UserNotFoundException;
 import com.emiyaconsulting.todo_list_api.model.User;
 import com.emiyaconsulting.todo_list_api.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +15,8 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
-    
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -23,8 +25,10 @@ public class UserService {
     }
     
     public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        savedUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        logger.info("Created user with id {}", savedUser.getId());
+        return savedUser;
     }
     
     public Iterable<User> getUsers() {
@@ -36,6 +40,8 @@ public class UserService {
                 returnedUsers.add(user);
             }
         }
+        logger.debug("Returning {} non-deleted users out of {} total", 
+                returnedUsers.size(), users.size());
         return returnedUsers;
     }
     
@@ -63,7 +69,9 @@ public class UserService {
                     ? updatedUser.getEmail() 
                     : optionalUser.get().getEmail());
             
-            return userRepository.save(existingUser);
+            User saved = userRepository.save(existingUser);
+            logger.info("Updated user {}", id);
+            return saved;
         }
         throw new UserNotFoundException(String.format("No user with id %s is available", id));
     }
@@ -76,7 +84,9 @@ public class UserService {
             existingUser.setActive(false);
             existingUser.setDeletedAt(Instant.now());
             
-            return userRepository.save(existingUser);
+            User saved = userRepository.save(existingUser);
+            logger.info("Set deleted flag to true user {}", id);
+            return saved;
         }
         throw new UserNotFoundException(String.format("No user with the id %s is available", id));
     }
@@ -87,7 +97,9 @@ public class UserService {
             User existingUser = optionalUser.get();
             existingUser.setActive(false);
             
-            return userRepository.save(existingUser);
+            User saved = userRepository.save(existingUser);
+            logger.info("Deactivated user {}", id);
+            return saved;
         }
         throw new UserNotFoundException(String.format("No user with the id %s is available", id));
     }
