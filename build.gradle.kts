@@ -8,6 +8,10 @@ group = "com.emiyaconsulting"
 version = "0.0.1-SNAPSHOT"
 description = "REST API for ToDo list"
 
+springBoot {
+	buildInfo()
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
