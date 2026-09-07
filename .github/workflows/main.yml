@@ -42,21 +42,25 @@ jobs:
         run: |
           ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      # ---- Copy the built jar to the server ----
-      - name: Copy jar to server
+      # ---- Copy the built jar and systemd unit to the server ----
+      - name: Copy jar and service file to server
         run: |
           scp -P ${{ secrets.SERVER_PORT }} \
             build/libs/app.jar \
-            ghactions@${{ secrets.SERVER_HOST }}:~/app.jar
+            deploy/todolistapp.service \
+            ghactions@${{ secrets.SERVER_HOST }}:~/
 
-      # ---- Move into place, fix ownership, restart the service ----
+      # ---- Move into place, fix ownership, reload the unit, restart the service ----
       - name: Deploy jar on server
         run: |
           ssh -p ${{ secrets.SERVER_PORT }} ghactions@${{ secrets.SERVER_HOST }} '
             set -e
             sudo mv /home/ghactions/app.jar /opt/todolist/app.jar
             sudo chown todolistapp:todolistapp /opt/todolist/app.jar
+            sudo mv /home/ghactions/todolistapp.service /etc/systemd/system/todolistapp.service
+            sudo chown root:root /etc/systemd/system/todolistapp.service
             sudo systemctl daemon-reload
+            sudo systemctl enable todolistapp.service
             sudo systemctl restart todolistapp.service
           '
 
