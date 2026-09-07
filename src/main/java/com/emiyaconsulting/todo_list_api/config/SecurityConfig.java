@@ -3,6 +3,7 @@ package com.emiyaconsulting.todo_list_api.config;
 import com.emiyaconsulting.todo_list_api.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,10 +26,12 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final UserDetailsService userDetailsService;
+    private final Environment environment;
 
-    public SecurityConfig(JwtFilter jwtFilter, UserDetailsService userDetailsService) {
+    public SecurityConfig(JwtFilter jwtFilter, UserDetailsService userDetailsService, Environment environment) {
         this.jwtFilter = jwtFilter;
         this.userDetailsService = userDetailsService;
+        this.environment = environment;
     }
 
     @Bean
@@ -59,17 +62,20 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .userDetailsService(userDetailsService)
                 // Use relative paths to http://domain/api/v1 to exclude paths from needing auth
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/**",
-                                "/healthcheck",
-                                "/auth/login", 
-                                "/auth/register", 
-                                "/swagger-ui/**", 
-                                "/swagger-ui.html", 
-                                "/v3/api-docs/**").permitAll()
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(auth -> {
+                    if (!environment.matchesProfiles("prod")) {
+                        // Wide open outside prod so the app is easy to poke at while testing
+                        auth.requestMatchers("/**").permitAll();
+                    }
+                    auth.requestMatchers(
+                                    "/healthcheck",
+                                    "/auth/login",
+                                    "/auth/register",
+                                    "/swagger-ui/**",
+                                    "/swagger-ui.html",
+                                    "/v3/api-docs/**").permitAll()
+                            .anyRequest().authenticated();
+                })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         
         return http.build();
