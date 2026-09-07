@@ -61,6 +61,7 @@ public class SecurityConfig {
                 // Use relative paths to http://domain/api/v1 to exclude paths from needing auth
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/**",
                                 "/healthcheck",
                                 "/auth/login", 
                                 "/auth/register", 
