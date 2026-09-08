@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=todolistapp
 WorkingDirectory=/opt/todolist
-EnvironmentFile=/opt/todolist/env
+EnvironmentFile=/etc/todolist/env
 Environment=SPRING_PROFILES_ACTIVE=prod
 ExecStart=/usr/bin/java -jar /opt/todolist/app.jar --server.port=8080
 SuccessExitStatus=143
