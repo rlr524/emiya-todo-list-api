@@ -1,0 +1,48 @@
+server {
+    server_name api.emiyanet.com;
+    location ~ ^/api/v1/auth/(login|register) {
+        limit_req zone=auth_limit burst=3 nodelay;
+	proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+	limit_req zone=api_limit burst=20 nodelay;
+
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # WebSocket support (harmless to include even if unused)
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/api.emiyanet.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/api.emiyanet.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = api.emiyanet.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name api.emiyanet.com;
+    return 404; # managed by Certbot
+
+
+}
