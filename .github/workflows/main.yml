@@ -17,10 +17,16 @@ jobs:
 
       # ---- Set up Java to match the server's runtime ----
       - name: Set up JDK 21 (Temurin build)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: '21'
           distribution: 'temurin'
+
+      #---- Temporary check CPU features ----
+      - name: Check CPU features
+        run: |
+          grep -m1 '^flags' /proc/cpuinfo | tr ' ' '\n' \
+            | grep -E '^(avx512f|avx512bw|avx512vbmi|bmi2)$'
 
       # ---- Build the jar ----
       - name: Build with Gradle
