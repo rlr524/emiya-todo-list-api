@@ -47,7 +47,7 @@ jobs:
         run: |
           scp -P ${{ secrets.SERVER_PORT }} \
             build/libs/app.jar \
-            deploy/todolistapp.service \
+            deploy/systemd/system/todolistapp.service \
             ghactions@${{ secrets.SERVER_HOST }}:~/
 
       # ---- Move into place, fix ownership, reload the unit, restart the service ----
